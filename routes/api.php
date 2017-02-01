@@ -37,7 +37,7 @@ Route::group(['prefix' => '/services/{service}'], function(){
   Route::post('/service_tags/{service_tag}', 'ServiceController@addServiceTag')->name('services.service_tags.add');
   Route::delete('/service_tags/{service_tag}', 'ServiceController@removeServiceTag')->name('services.service_tags.remove');
 });
-Route::resource('/services', 'ServiceController', ['except' => ['create', 'edit', 'store', 'update', 'destroy']]);
+Route::resource('/services', 'ServiceController', ['except' => ['create', 'edit']]);
 
 // Service Tags
-Route::resource('/service_tags', 'ServiceTagController', ['except' => ['create', 'edit', 'store', 'update', 'destroy']]);
+Route::resource('/service_tags', 'ServiceTagController', ['except' => ['create', 'edit']]);
