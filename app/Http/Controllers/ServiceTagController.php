@@ -18,7 +18,7 @@ class ServiceTagController extends Controller
     }
 
     public function show($id){
-      return response()->json(ServiceTag::find($id));
+      return response()->json(ServiceTag::where('id', '=', $id)->get()->first());
     }
 
     public function update(Request $request, $id){

@@ -19,7 +19,7 @@ class EventController extends Controller
     }
 
     public function show($id){
-      return response()->json(Event::with(['services','services.serviceTags'])->where('id', '=', $id)->get());
+      return response()->json(Event::with(['services','services.serviceTags'])->where('id', '=', $id)->get()->first());
     }
 
     public function update(Request $request, $id){
