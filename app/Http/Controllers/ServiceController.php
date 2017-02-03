@@ -15,7 +15,7 @@ class ServiceController extends Controller
     public function store(Request $request){
       $service = Service::create($request->all());
       // Return the created object for now
-      return response()->json($service);
+      return response()->json($service->with(['serviceTags'])->where('id', '=', $service->getKey())->get()->first());
     }
 
     public function show($id){

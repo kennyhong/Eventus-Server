@@ -15,7 +15,7 @@ class EventController extends Controller
     public function store(Request $request){
       $event = Event::create($request->all());
       // Return the created object for now
-      return response()->json($event);
+      return response()->json($event->with(['services','services.serviceTags'])->where('id', '=', $event->getKey())->get()->first());
     }
 
     public function show($id){
