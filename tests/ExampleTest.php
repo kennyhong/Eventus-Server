@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ExampleTest extends TestCase
 {
+    use DatabaseTransactions;
     /**
      * A basic functional test example.
      *
@@ -15,5 +15,13 @@ class ExampleTest extends TestCase
     {
         $this->visit('/')
              ->see('Laravel');
+    }
+
+    // PAUL: This just tests that the models created in ModelFactory.php actually work
+    public function testModelsInFactory()
+    {
+        $event = factory(App\Event::class)->create();
+        $service = factory(App\Service::class)->create();
+        $serviceTag = factory(App\ServiceTag::class)->create();
     }
 }
