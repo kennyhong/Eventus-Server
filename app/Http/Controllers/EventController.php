@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Exceptions\EventusException;
 use App\Event;
 use App\Service;
 
@@ -19,7 +20,8 @@ class EventController extends Controller
     }
 
     public function show($id){
-      return response()->json(Event::with(['services','services.serviceTags'])->where('id', '=', $id)->get()->first());
+      $event = Event::with(['services','services.serviceTags'])->where('id', '=', $id)->get()->first();
+      return response()->json($event);
     }
 
     public function update(Request $request, $id){

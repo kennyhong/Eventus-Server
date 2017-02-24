@@ -44,6 +44,16 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        $group = $request->route()->middleware();
+        if($request->expectsJson() || (sizeof($group) > 0 && $group[0] == 'api')){
+          return response()->json([
+            'data' => NULL,
+            'error' => [
+              'title' => (new \ReflectionClass($exception))->getShortName(),
+              'detail' => $exception->getMessage(),
+            ]
+          ]);
+        }
         return parent::render($request, $exception);
     }
 
