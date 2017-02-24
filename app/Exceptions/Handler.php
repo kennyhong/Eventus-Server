@@ -44,8 +44,8 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        $group = $request->route()->middleware();
-        if($request->expectsJson() || (sizeof($group) > 0 && $group[0] == 'api')){
+        $group = $request->segment(1);
+        if($request->expectsJson() || $group == "api"){
           return response()->json([
             'data' => NULL,
             'error' => [
