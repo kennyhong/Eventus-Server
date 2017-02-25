@@ -53,6 +53,11 @@ class EventController extends Controller
       ]);
     }
 
+    public function getInvoce($id){
+        return response()->json(Event::with(['services','services.serviceTags'])->where('id', '=', $id)->get()->first());
+        //not the real return
+    }
+
     public function getServices($id){
       return response()->json([
         'data' => Event::findOrFail($id)->services()->with('serviceTags')->get(),
