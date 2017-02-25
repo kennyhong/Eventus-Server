@@ -40,7 +40,7 @@ class EventController extends Controller
     }
 
     //decode the json returned from the query and add up all the prices/taxes of the services within
-    public function getInvoce($id){
+    public function getInvoice($id){
         $tax_rate = 0.13;
         $temp = Event::with(['services','services.serviceTags'])->where('id', '=', $id)->get()->first()->toJson();
         $json = json_decode($temp,true);
