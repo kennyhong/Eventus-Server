@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Exceptions\EventusException;
 use App\Service;
 use App\ServiceTag;
 
@@ -59,7 +60,18 @@ class ServiceController extends Controller
     }
 
     public function addServiceTag($id, $serviceTagId){
-      Service::findOrFail($id)->serviceTags()->attach($serviceTagId);
+      try {
+        Service::findOrFail($id)->serviceTags()->attach($serviceTagId);
+      } catch(\Exception $e) {
+        if(!ServiceTag::find($serviceTagId)){
+          throw new EventusException("Failed to add ServiceTag to Service. No such ServiceTag exists.");
+
+        } else if(Service::findOrFail($id)->serviceTags()->find($serviceTagId)){
+          throw new EventusException("Failed to add ServiceTag to Service. Service already has ServiceTag.");
+
+        }
+        throw new EventusException("Failed to add ServiceTag to Service.");
+      }
       return response()->json([
         'data' => Service::findOrFail($id)->serviceTags()->get(),
       ]);

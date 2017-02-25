@@ -60,7 +60,20 @@ class EventController extends Controller
     }
 
     public function addService($id, $serviceId){
-      Event::findOrFail($id)->services()->attach($serviceId);
+      $thingEvent = null;
+      try {
+        Event::findOrFail($id)->services()->attach($serviceId);
+
+      } catch(\Exception $e) {
+        if(!Service::find($serviceId)){
+          throw new EventusException("Failed to add Service to Event. No such Service exists.");
+
+        } else if(Event::findOrFail($id)->services()->find($serviceId)){
+          throw new EventusException("Failed to add Service to Event. Event already has Service.");
+
+        }
+        throw new EventusException("Failed to add Service to Event.");
+      }
       return response()->json([
         'data' => Event::findOrFail($id)->services()->with('serviceTags')->get(),
       ]);
