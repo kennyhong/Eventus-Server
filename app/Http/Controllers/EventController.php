@@ -39,6 +39,11 @@ class EventController extends Controller
       return response()->json(["success" => $success]);
     }
 
+    public function getInvoce($id){
+        return response()->json(Event::with(['services','services.serviceTags'])->where('id', '=', $id)->get()->first());
+        //not the real return
+    }
+
     public function getServices($id){
       return response()->json(Event::findOrFail($id)->services()->get());
     }
