@@ -9,24 +9,32 @@ use App\ServiceTag;
 class ServiceController extends Controller
 {
     public function index(){
-      return response()->json(Service::with(['serviceTags'])->get());
+      return response()->json([
+        'data' => Service::with(['serviceTags'])->get(),
+      ]);
     }
 
     public function store(Request $request){
       $service = Service::create($request->all());
-      // Return the created object for now
-      return response()->json($service->with(['serviceTags'])->where('id', '=', $service->getKey())->get()->first());
+
+      return response()->json([
+        'data' => $service->with(['serviceTags'])->where('id', '=', $service->getKey())->get()->first(),
+      ]);
     }
 
     public function show($id){
-      return response()->json(Service::with(['serviceTags'])->where('id', '=', $id)->get()->first());
+      return response()->json([
+        'data' => Service::with(['serviceTags'])->where('id', '=', $id)->get()->first(),
+      ]);
     }
 
     public function update(Request $request, $id){
       $service = Service::find($id);
       $service->update($request->all());
-      // Return the object updated for now
-      return response()->json($service);
+
+      return response()->json([
+        'data' => $service,
+      ]);
     }
 
     public function destroy($id){
@@ -35,20 +43,32 @@ class ServiceController extends Controller
       if($service !== null){
         $success = $service->delete();
       }
-      // Return a json object with confirmation
-      return response()->json(["success" => $success]);
+
+      return response()->json([
+        'meta' => [
+          'success' => $success,
+        ],
+        'data' => NULL,
+      ]);
     }
 
     public function getServiceTags($id){
-      return response()->json(Service::findOrFail($id)->serviceTags()->get());
+      return response()->json([
+        'data' => Service::findOrFail($id)->serviceTags()->get(),
+      ]);
     }
 
     public function addServiceTag($id, $serviceTagId){
       Service::findOrFail($id)->serviceTags()->attach($serviceTagId);
-      return ServiceTag::findOrFail($serviceTagId);
+      return response()->json([
+        'data' => Service::findOrFail($id)->serviceTags()->get(),
+      ]);
     }
 
     public function removeServiceTag($id, $serviceTagId){
       Service::findOrFail($id)->serviceTags()->detach($serviceTagId);
+      return response()->json([
+        'data' => Service::findOrFail($id)->serviceTags()->get(),
+      ]);
     }
 }

@@ -18,16 +18,14 @@ class EventusJsonResponseFormat
         $response = $next($request);
 
         if($response instanceof \Illuminate\Http\JsonResponse && $response->exception === NULL){
-          // This looks dumb, and it is... if getData() is "{}" then it converts to an empty stdClass
-          // So I have to cast to an array and get the count of elements, if there are no
-          // elements, it's empty and should be NULL
           $data = $response->getData();
-          $data = count((array) $data) == 0 ? NULL : $data;
 
-          $response->setData([
-              'data' => $data,
-              'error' => NULL,
-            ]);
+          $responseData = [];
+          $responseData['meta'] = property_exists($data, 'meta') ? $data->meta : NULL;
+          $responseData['data'] = property_exists($data, 'data') ? $data->data : NULL;
+          $responseData['error'] = NULL;
+
+          $response->setData($responseData);
         }
 
         return $response;

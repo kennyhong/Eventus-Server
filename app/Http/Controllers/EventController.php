@@ -10,25 +10,32 @@ use App\Service;
 class EventController extends Controller
 {
     public function index(){
-      return response()->json(Event::with(['services','services.serviceTags'])->get());
+      return response()->json([
+        'data' => Event::with(['services','services.serviceTags'])->get(),
+      ]);
     }
 
     public function store(Request $request){
       $event = Event::create($request->all());
-      // Return the created object for now
-      return response()->json($event->with(['services','services.serviceTags'])->where('id', '=', $event->getKey())->get()->first());
+
+      return response()->json([
+        'data' => $event->with(['services','services.serviceTags'])->where('id', '=', $event->getKey())->get()->first(),
+      ]);
     }
 
     public function show($id){
-      $event = Event::with(['services','services.serviceTags'])->where('id', '=', $id)->get()->first();
-      return response()->json($event);
+      return response()->json([
+        'data' => Event::with(['services','services.serviceTags'])->where('id', '=', $id)->get()->first(),
+      ]);
     }
 
     public function update(Request $request, $id){
       $event = Event::findOrFail($id);
       $event->update($request->all());
-      // Return the object updated for now
-      return response()->json($event);
+
+      return response()->json([
+        'data' => $event,
+      ]);
     }
 
     public function destroy($id){
@@ -37,20 +44,32 @@ class EventController extends Controller
       if($event !== null){
         $success = $event->delete();
       }
-      // Return a json object with confirmation
-      return response()->json(["success" => $success]);
+
+      return response()->json([
+        'meta' => [
+          'success' => $success,
+        ],
+        'data' => NULL,
+      ]);
     }
 
     public function getServices($id){
-      return response()->json(Event::findOrFail($id)->services()->get());
+      return response()->json([
+        'data' => Event::findOrFail($id)->services()->with('serviceTags')->get(),
+      ]);
     }
 
     public function addService($id, $serviceId){
       Event::findOrFail($id)->services()->attach($serviceId);
-      return Service::with('serviceTags')->where('id', '=', $serviceId)->get();
+      return response()->json([
+        'data' => Event::findOrFail($id)->services()->with('serviceTags')->get(),
+      ]);
     }
 
     public function removeService($id, $serviceId){
       Event::findOrFail($id)->services()->detach($serviceId);
+      return response()->json([
+        'data' => Event::findOrFail($id)->services()->with('serviceTags')->get(),
+      ]);
     }
 }
