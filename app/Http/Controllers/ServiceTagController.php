@@ -8,24 +8,32 @@ use App\ServiceTag;
 class ServiceTagController extends Controller
 {
     public function index(){
-      return response()->json(ServiceTag::all());
+      return response()->json([
+        'data' => ServiceTag::all(),
+      ]);
     }
 
     public function store(Request $request){
       $serviceTag = ServiceTag::create($request->all());
-      // Return the created object for now
-      return response()->json($serviceTag);
+      
+      return response()->json([
+        'data' => $serviceTag,
+      ]);
     }
 
     public function show($id){
-      return response()->json(ServiceTag::where('id', '=', $id)->get()->first());
+      return response()->json([
+        'data' => ServiceTag::where('id', '=', $id)->get()->first(),
+      ]);
     }
 
     public function update(Request $request, $id){
       $serviceTag = ServiceTag::find($id);
       $serviceTag->update($request->all());
-      // Return the object updated for now
-      return response()->json($serviceTag);
+
+      return response()->json([
+        'data' => $serviceTag,
+      ]);
     }
 
     public function destroy($id){
@@ -34,7 +42,12 @@ class ServiceTagController extends Controller
       if($serviceTag !== null){
         $success = $serviceTag->delete();
       }
-      // Return a json object with confirmation
-      return response()->json(["success" => $success]);
+
+      return response()->json([
+        'meta' => [
+          'success' => $success,
+        ],
+        'data' => NULL,
+      ]);
     }
 }
