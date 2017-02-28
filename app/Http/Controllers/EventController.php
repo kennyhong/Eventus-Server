@@ -34,7 +34,7 @@ class EventController extends Controller
       $event->update($request->all());
 
       return response()->json([
-        'data' => $event,
+        'data' => $event->with(['services','services.serviceTags'])->where('id', '=', $event->getKey())->get()->first(),
       ]);
     }
 
