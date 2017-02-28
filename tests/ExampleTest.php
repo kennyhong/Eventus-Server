@@ -18,7 +18,7 @@ class ExampleTest extends TestCase
     }
 
     // PAUL: This just tests that the models created in ModelFactory.php actually work
-    public function testModelsInFactory()
+    public function test_models_in_factory()
     {
         $event = factory(App\Event::class)->create();
         $service = factory(App\Service::class)->create();

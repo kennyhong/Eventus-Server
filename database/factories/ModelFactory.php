@@ -29,7 +29,7 @@ $factory->define(App\Event::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'description' => $faker->paragraph(3, true),
-        'date' => $faker->dateTimeThisYear()
+        'date' => $faker->dateTimeThisYear()->format('Y-m-d H:i:s'),
     ];
 });
 
