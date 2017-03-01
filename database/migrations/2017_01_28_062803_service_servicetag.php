@@ -32,6 +32,6 @@ class ServiceServicetag extends Migration
      */
     public function down()
     {
-        Schema::drop('service_servicetag');
+        Schema::drop('service_service_tag');
     }
 }
