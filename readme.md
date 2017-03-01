@@ -1,4 +1,4 @@
-# Welcome to the Eventus Server [Staging]
+# Welcome to the Eventus Server
 **the Back End API for the Eventus cluster of applications**
 
 ### API Docs can be found in the [Wiki](https://github.com/kennyhong/Eventus-Server/wiki)  
