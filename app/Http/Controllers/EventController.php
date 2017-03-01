@@ -34,7 +34,7 @@ class EventController extends Controller
       $event->update($request->all());
 
       return response()->json([
-        'data' => $event,
+        'data' => $event->with(['services','services.serviceTags'])->where('id', '=', $event->getKey())->get()->first(),
       ]);
     }
 
@@ -60,7 +60,6 @@ class EventController extends Controller
     }
 
     public function addService($id, $serviceId){
-      $thingEvent = null;
       try {
         Event::findOrFail($id)->services()->attach($serviceId);
 

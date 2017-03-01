@@ -34,7 +34,7 @@ class ServiceController extends Controller
       $service->update($request->all());
 
       return response()->json([
-        'data' => $service,
+        'data' => $service->with(['serviceTags'])->where('id', '=', $service->getKey())->get()->first(),
       ]);
     }
 
