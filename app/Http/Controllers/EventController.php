@@ -60,7 +60,6 @@ class EventController extends Controller
     }
 
     public function addService($id, $serviceId){
-      $thingEvent = null;
       try {
         Event::findOrFail($id)->services()->attach($serviceId);
 
