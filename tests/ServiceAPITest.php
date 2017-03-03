@@ -91,7 +91,7 @@ class ServiceAPITest extends TestCase
     /** @test */
     public function can_update_a_service()
     {
-      // The static test text we will use to update our event
+      // The static test text we will use to update our service
       $newName = "Eventus Test 01";
       $newCost = 125.00;
       $newPropArray = [
