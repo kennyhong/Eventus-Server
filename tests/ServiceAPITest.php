@@ -146,6 +146,8 @@ class ServiceAPITest extends TestCase
         ])->seeJsonStructure([
           'meta' => ['success']
         ]);
+      // Verify that there are now only 2 services
+      $this->assertCount(2, App\Service::all());
       // Verify that no service tags are missing
       $this->assertCount(3, App\ServiceTag::all());
     }

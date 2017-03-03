@@ -122,5 +122,7 @@ class ServiceTagAPITest extends TestCase
         ])->seeJsonStructure([
           'meta' => ['success']
         ]);
+      // Verify that there are now only 2 serviceTags
+      $this->assertCount(2, App\ServiceTag::all());
     }
 }
