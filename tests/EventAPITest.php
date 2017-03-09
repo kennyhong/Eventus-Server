@@ -265,4 +265,35 @@ class EventAPITest extends TestCase
         // Verify that there are the correct number of services attached to the event
         $this->assertCount(1, $event->services()->get());
     }
+
+    /** @test */
+    public function can_get_invoice_of_event()
+    {
+        // Create 3 events to make sure when we retrieve our desired event that we don't retrieve the wrong one
+        $events = factory(App\Event::class, 3)->create();
+        // 1 event with 3 services and 1 servicetag for each service
+        factory(App\Service::class, 3)->make()->each(function($service) use ($events){
+            $events[1]->services()->save($service);
+            $service->serviceTags()->save(factory(App\ServiceTag::class)->make());
+        });
+        // Use the show endpoint to retrieve event ID 2, validate format and attributes, also validates plurality in the JsonStructure section
+        $this->json('GET', '/api/events/2')
+            ->seeJson([
+                'error' => null,
+            ])->seeJsonStructure([
+                'data' => [
+                    'id', 'name', 'description', 'date', 'created_at', 'updated_at', 'services'
+                ],
+                'meta'
+            ]);
+        $jsonResponse = json_decode($this->response->content());
+        // Validate attributes that should not be present are not present
+        $this->assertObjectNotHasAttribute('pivot', $jsonResponse->data);
+        // Validate that the event has the correct number of services
+        $this->assertCount(3, $jsonResponse->data->services);
+        // Validate that each service has the correct number of serviceTags
+        foreach($jsonResponse->data->services as $service){
+            $this->assertCount(1, $service->service_tags);
+        }
+    }
 }
