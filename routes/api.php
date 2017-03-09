@@ -16,7 +16,7 @@ use App\ServiceTag;
 |
 */
 Route::get('/', function (Request $request) {
-  return response()->json(["success" => "You've successfully accessed the Eventus API!"]);
+  return response()->json(['data' => null, 'error' => null, 'meta' => ['message' => 'You\'ve successfully connected to the Eventus API!', 'success' => true]]);
 });
 
 Route::get('/user', function (Request $request) {

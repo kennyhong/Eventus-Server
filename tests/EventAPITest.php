@@ -166,6 +166,8 @@ class EventAPITest extends TestCase
         ])->seeJsonStructure([
           'meta' => ['success']
         ]);
+      // Verify that there are now only 2 events
+      $this->assertCount(2, App\Event::all());
       // Verify that no services are missing
       $this->assertCount(3, App\Service::all());
       // Verify that no service tags are missing
