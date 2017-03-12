@@ -278,7 +278,7 @@ class EventAPITest extends TestCase
         factory(App\Service::class, 3)->make()->each(function($service) use ($events){
 
             $events[1]->services()->save($service);
-            //$service->serviceTags()->save(factory(App\ServiceTag::class)->make());
+            $service->serviceTags()->save(factory(App\ServiceTag::class)->make());
         });
         //fill the costs so we can test the values
         $subTotal = 0;
