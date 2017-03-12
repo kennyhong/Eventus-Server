@@ -23,7 +23,20 @@ We're using Laravel (PHP) to build out the API. All structure is discussed and d
   - Event: Class definition for an Eventus Event object.
   - Service: Class definition for an Eventus Service object.
   - ServiceTag: Class definition for an Eventus ServiceTag object.
+- database
+  - factories
+    - ModelFactory(modified): Model Factories allow us to create mock data for our resources. Mostly for testing.
+  - migrations
+    - <several migrations>: All the migrations files are defined by us, they allow us to add/remove changes to the database.
+- routes
+  - api: under the subdirectory `<server-address>/api/` are the routes listed here.
+- tests
+  - EventAPITest: Integration tests over the individual API routes (more specifically, their associated Controller methods.)
+  - ServiceAPITest: Same as above.
+  - ServiceTagAPITest: Same as above.
+  - ExampleTest(modified): Runs creations using faker (the Model Factory library) to ensure they're working.
 ```
+
 
 ## About Laravel
 
