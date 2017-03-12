@@ -1,11 +1,29 @@
 # Welcome to the Eventus Server
 **the Back End API for the Eventus cluster of applications**
 
-### API Docs can be found in the [Wiki](https://github.com/kennyhong/Eventus-Server/wiki)  
+### Extensive Documentation can be found in the [Eventus Server Wiki](https://github.com/kennyhong/Eventus-Server/wiki)  
 
-<br><br><br>
+_**This project uses Laravel Framework**_  
+We're using Laravel (PHP) to build out the API. All structure is discussed and defined by the framework developers. All content in this repository is required for the functionality (or future functionality) of the server application.
 
-_**This project uses Laravel Framework**_
+**Here is the general structure for the parts of the architecture that we have implemented:**
+```
+- app
+  - Exceptions
+    - EventusException: A generic parent Exception for our server application.
+    - Handler(modified): Added a hook in render() that sends a JSON response instead of a rendered HTML page.
+  - Http
+    - Controllers
+      - EventController: Handles interaction between the Event objects, the persistence layer, and children.
+      - ServiceController: Handles interaction between the Service objects, the persistence layer, and children.
+      - ServiceTagController: Handles interaction between the ServiceTag objects and the persistence layer.
+    - Middleware
+      - CorsHeaders: Adds the headers necessary to allow Cross-Origin Resource Sharing.
+      - EventusJsonResponseFormat: Modifies the outgoing response in-transit to meet our Eventus JSON spec.
+  - Event: Class definition for an Eventus Event object.
+  - Service: Class definition for an Eventus Service object.
+  - ServiceTag: Class definition for an Eventus ServiceTag object.
+```
 
 ## About Laravel
 
