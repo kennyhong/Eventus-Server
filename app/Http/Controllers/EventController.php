@@ -53,6 +53,28 @@ class EventController extends Controller
       ]);
     }
 
+    //decode the json returned from the query and add up all the prices/taxes of the services within
+    public function getInvoice($id){
+        $tax_rate = 0.13;
+        $json = Event::with(['services','services.serviceTags'])->where('id', '=', $id)->get()->first();
+        $price = 0;
+        //add up the prices
+        foreach($json['services'] as $service)
+        {
+            $price = $price + $service['cost'];
+        }
+        //add values to the json
+        $json['sub_total'] = $price;
+        $tax = $price * $tax_rate;//calculate taxes
+        $tax = round($tax,2,PHP_ROUND_HALF_UP);
+        $json['tax'] = $tax;
+        $json['grand_total'] = $json['sub_total'] + $json['tax'];
+
+        return response()->json([
+            'data' => $json
+        ]);
+    }
+
     public function getServices($id){
       return response()->json([
         'data' => Event::findOrFail($id)->services()->with('serviceTags')->get(),

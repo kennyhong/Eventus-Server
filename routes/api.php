@@ -25,6 +25,7 @@ Route::get('/user', function (Request $request) {
 
 // Events
 Route::group(['prefix' => '/events/{event}'], function(){
+    Route::get('/invoice', 'EventController@getInvoice')->name('events.invoice.show');
   Route::get('/services', 'EventController@getServices')->name('events.services.show');
   Route::post('/services/{service}', 'EventController@addService')->name('events.services.add');
   Route::delete('/services/{service}', 'EventController@removeService')->name('events.services.remove');

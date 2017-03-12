@@ -267,4 +267,66 @@ class EventAPITest extends TestCase
         // Verify that there are the correct number of services attached to the event
         $this->assertCount(1, $event->services()->get());
     }
+
+    /** @test */
+    public function can_get_invoice_of_event()
+    {
+        $tax_rate = 0.13;
+        // Create 3 events to make sure when we retrieve our desired event that we don't retrieve the wrong one
+        $events = factory(App\Event::class, 3)->create();
+        // 1 event with 3 services and 1 servicetag for each service
+        factory(App\Service::class, 3)->make()->each(function($service) use ($events){
+
+            $events[1]->services()->save($service);
+            $service->serviceTags()->save(factory(App\ServiceTag::class)->make());
+        });
+        //fill the costs so we can test the values
+        $subTotal = 0;
+        $newName = "Eventus Test 01";
+        $newCost = 125.12;
+        $subTotal += $newCost;
+        $propArray1 = [
+            'name' => $newName,
+            'cost' => $newCost,
+        ];
+        $id = 1;
+        $this->json('PUT', '/api/services/'.$id, $propArray1);
+        $newName = "Eventus Test 02";
+        $newCost = 125.34;
+        $subTotal += $newCost;
+        $propArray2 = [
+            'name' => $newName,
+            'cost' => $newCost,
+        ];
+        $id = 2;
+        $this->json('PUT', '/api/services/'.$id, $propArray2);
+        $newName = "Eventus Test 03";
+        $newCost = 125.56;
+        $subTotal += $newCost;
+        $propArray3 = [
+            'name' => $newName,
+            'cost' => $newCost,
+        ];
+        $id = 3;
+        $this->json('PUT', '/api/services/'.$id, $propArray3);
+
+        // Use the show endpoint to retrieve event ID 2, validate format and attributes, also validates plurality in the JsonStructure section
+        $this->json('GET', '/api/events/2/invoice')
+            ->seeJson([
+                'error' => null,
+            ])->seeJsonStructure([
+                'data' => [
+                    'id', 'name', 'description', 'date', 'created_at', 'updated_at', 'services', 'sub_total', 'tax', 'grand_total'
+                ],
+                'meta'
+            ]);
+        $jsonResponse = json_decode($this->response->content());
+        // Validate attributes that should not be present are not present
+        $this->assertObjectNotHasAttribute('pivot', $jsonResponse->data);
+        // Validate that the event has the correct number of services
+        $this->assertCount(3, $jsonResponse->data->services);
+        $this->assertEquals($subTotal, $jsonResponse->data->sub_total);
+        $grandTotal = round($subTotal + ($tax_rate * $subTotal),2,PHP_ROUND_HALF_UP);
+        $this->assertEquals($grandTotal, $jsonResponse->data->grand_total);
+    }
 }
