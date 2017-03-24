@@ -36,7 +36,7 @@ class Kernel extends HttpKernel
             'throttle:60,1',
             'bindings',
             \App\Http\Middleware\EventusJsonResponseFormat::class,
-            \App\Http\Middleware\CorsHeaders::class,
+            \Barryvdh\Cors\HandleCors::class,
         ],
     ];
 
