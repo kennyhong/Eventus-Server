@@ -10,9 +10,31 @@ use App\ServiceTag;
 class ServiceController extends Controller
 {
     public function index(){
-      return response()->json([
-        'data' => Service::with(['serviceTags'])->get(),
-      ]);
+      if(isset($_GET['tag'])) {
+          $tag = $_GET['tag'];
+          $json = null;
+          $i = 0;
+          $data = Service::with(['serviceTags'])->get();
+          foreach($data as $service){
+              $found = false;
+              foreach($service['serviceTags'] as $stags){
+                 if($stags['id'] == $tag){
+                     $found = true;
+                 }
+              }
+              if($found == true){
+                  $json[$i] = $service;
+                  $i = $i + 1;
+              }
+          }
+          return response()->json([
+              'data' => $json,
+          ]);
+      }else {
+          return response()->json([
+              'data' => Service::with(['serviceTags'])->get(),
+          ]);
+      }
     }
 
     public function store(Request $request){
@@ -27,6 +49,7 @@ class ServiceController extends Controller
       return response()->json([
         'data' => Service::with(['serviceTags'])->where('id', '=', $id)->get()->first(),
       ]);
+
     }
 
     public function update(Request $request, $id){
