@@ -27,4 +27,12 @@ class Service extends Model
   public function serviceTags(){
     return $this->belongsToMany('App\ServiceTag');
   }
+
+  public function scopeFilterByIds($query, $request){
+    if(! $ids = $request->input('filter-ids')) return $query;
+
+    $ids = explode(",", $ids);
+
+    return $query->whereIn('id', $ids);
+  }
 }

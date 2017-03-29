@@ -9,32 +9,14 @@ use App\ServiceTag;
 
 class ServiceController extends Controller
 {
-    public function index(){
-      if(isset($_GET['tag'])) {
-          $tag = $_GET['tag'];
-          $json = null;
-          $i = 0;
-          $data = Service::with(['serviceTags'])->get();
-          foreach($data as $service){
-              $found = false;
-              foreach($service['serviceTags'] as $stags){
-                 if($stags['id'] == $tag){
-                     $found = true;
-                 }
-              }
-              if($found == true){
-                  $json[$i] = $service;
-                  $i = $i + 1;
-              }
-          }
-          return response()->json([
-              'data' => $json,
-          ]);
-      }else {
-          return response()->json([
-              'data' => Service::with(['serviceTags'])->get(),
-          ]);
-      }
+    public function index(Request $request){
+      $data = Service::with(['serviceTags'])->
+        filterByIds($request)->
+        get();
+
+      return response()->json([
+          'data' => $data,
+      ]);
     }
 
     public function store(Request $request){
