@@ -13,6 +13,7 @@ class ServiceController extends Controller
       $data = Service::with(['serviceTags'])->
         filterByIds($request)->
         filterByTagIds($request)->
+        filterExceptIds($request)->
         get();
 
       return response()->json([

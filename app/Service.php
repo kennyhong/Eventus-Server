@@ -36,6 +36,14 @@ class Service extends Model
     return $query->whereIn('id', $ids);
   }
 
+  public function scopeFilterExceptIds($query, $request){
+     if(! $ids = $request->input('filter-except-ids')) return $query;
+
+     $ids = explode(",", $ids);
+
+     return $query->whereNotIn('id', $ids);
+  }
+
   public function scopeFilterByTagIds($query, $request){
     if(! $ids = $request->input('filter-tag-ids')) return $query;
 
