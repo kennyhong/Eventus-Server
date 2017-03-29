@@ -35,4 +35,14 @@ class Service extends Model
 
     return $query->whereIn('id', $ids);
   }
+
+    public function scopeFilterByTagIds($query, $request){
+        if(! $ids = $request->input('filter-tag-ids')) return $query;
+
+        $ids = explode(",", $ids);
+
+        return $query->whereHas('serviceTags', function($query) use ($ids){
+            $query->whereIn('id', $ids);
+        });
+    }
 }

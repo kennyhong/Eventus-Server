@@ -12,6 +12,7 @@ class ServiceController extends Controller
     public function index(Request $request){
       $data = Service::with(['serviceTags'])->
         filterByIds($request)->
+        filterByTagIds($request)->
         get();
 
       return response()->json([
