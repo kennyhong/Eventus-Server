@@ -69,7 +69,6 @@ class EventController extends Controller
         $tax = round($tax,2,PHP_ROUND_HALF_UP);
         $json['tax'] = $tax;
         $json['grand_total'] = $json['sub_total'] + $json['tax'];
-
         return response()->json([
             'data' => $json
         ]);

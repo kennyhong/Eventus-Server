@@ -31,6 +31,229 @@ class ServiceAPITest extends TestCase
     }
 
     /** @test */
+    public function can_filter_service_by_id()
+    {
+        // Creating 3 services with 1 service tags each
+        factory(App\Service::class, 3)->create()->each(function($service){
+          $service->serviceTags()->save(factory(App\ServiceTag::class, 1)->make());
+        });
+        // Get a single service by id
+        $this->json('GET', '/api/services?filter-ids=2')
+          ->seeJson([
+            'error' => null,
+          ])->seeJsonStructure([
+            'data' => [
+              '*' => ['id', 'name', 'cost', 'created_at', 'updated_at', 'service_tags']
+            ],
+            'meta'
+          ]);
+
+        $jsonResponse = json_decode($this->response->content());
+        // Validate that the correct number of services were retrieved
+        $this->assertCount(1, $jsonResponse->data);
+        // Validate that the correct service was retrieved
+        $this->assertEquals(2, $jsonResponse->data[0]->id);
+
+        // Get multiple services by id
+        $this->json('GET', '/api/services?filter-ids=1,2')
+          ->seeJson([
+            'error' => null,
+          ])->seeJsonStructure([
+            'data' => [
+              '*' => ['id', 'name', 'cost', 'created_at', 'updated_at', 'service_tags']
+            ],
+            'meta'
+          ]);
+
+        $jsonResponse = json_decode($this->response->content());
+        // Validate that the correct number of services were retrieved
+        $this->assertCount(2, $jsonResponse->data);
+        // Validate that the correct service was retrieved
+        $this->assertEquals(1, $jsonResponse->data[0]->id);
+        $this->assertEquals(2, $jsonResponse->data[1]->id);
+    }
+
+    /** @test */
+    public function can_filter_service_empty()
+    {
+        // Creating 3 services with 1 service tags each
+        factory(App\Service::class, 3)->create()->each(function($service){
+          $service->serviceTags()->save(factory(App\ServiceTag::class, 1)->make());
+        });
+        // empty request
+        $this->json('GET', '/api/services?filter-ids=')
+          ->seeJson([
+            'error' => null,
+          ])->seeJsonStructure([
+            'data' => [
+              '*' => ['id', 'name', 'cost', 'created_at', 'updated_at', 'service_tags']
+            ],
+            'meta'
+          ]);
+
+        $jsonResponse = json_decode($this->response->content());
+        // Validate that the correct number of services were retrieved
+        $this->assertCount(3, $jsonResponse->data);
+    }
+
+    /** @test */
+    public function can_filter_service_by_except_id()
+    {
+        // Creating 3 services with 1 service tags each
+        factory(App\Service::class, 3)->create()->each(function($service){
+          $service->serviceTags()->save(factory(App\ServiceTag::class, 1)->make());
+        });
+        // Filter out a single service by id
+        $this->json('GET', '/api/services?filter-except-ids=2')
+          ->seeJson([
+            'error' => null,
+          ])->seeJsonStructure([
+            'data' => [
+              '*' => ['id', 'name', 'cost', 'created_at', 'updated_at', 'service_tags']
+            ],
+            'meta'
+          ]);
+
+        $jsonResponse = json_decode($this->response->content());
+        // Validate that the correct number of services were retrieved
+        $this->assertCount(2, $jsonResponse->data);
+        // validate the correct data is returned
+        $this->assertEquals(1, $jsonResponse->data[0]->id);
+        $this->assertEquals(3, $jsonResponse->data[1]->id);
+
+        // Filter out multiple services by id
+        $this->json('GET', '/api/services?filter-except-ids=1,2')
+          ->seeJson([
+            'error' => null,
+          ])->seeJsonStructure([
+            'data' => [
+              '*' => ['id', 'name', 'cost', 'created_at', 'updated_at', 'service_tags']
+            ],
+            'meta'
+          ]);
+
+        $jsonResponse = json_decode($this->response->content());
+        // Validate that the correct number of services were retrieved
+        $this->assertCount(1, $jsonResponse->data);
+        // Validate the correct data is returned
+        $this->assertEquals(3, $jsonResponse->data[0]->id);
+    }
+
+    /** @test */
+    public function can_filter_except_service_empty()
+    {
+        // Creating 3 services with 1 service tags each
+        factory(App\Service::class, 3)->create()->each(function($service){
+          $service->serviceTags()->save(factory(App\ServiceTag::class, 1)->make());
+        });
+        // empty request
+        $this->json('GET', '/api/services?filter-except-ids=')
+          ->seeJson([
+            'error' => null,
+          ])->seeJsonStructure([
+            'data' => [
+              '*' => ['id', 'name', 'cost', 'created_at', 'updated_at', 'service_tags']
+            ],
+            'meta'
+          ]);
+
+        $jsonResponse = json_decode($this->response->content());
+        // Validate that the correct number of services were retrieved
+        $this->assertCount(3, $jsonResponse->data);
+    }
+
+    /** @test */
+    public function can_filter_service_multi_filter()
+    {
+        // Creating 3 services with 1 service tags each
+        factory(App\Service::class, 3)->create()->each(function($service){
+          $service->serviceTags()->save(factory(App\ServiceTag::class, 1)->make());
+        });
+        // request 2 services and then filter one of them out
+        $this->json('GET', '/api/services?filter-ids=1,2&filter-except-ids=2')
+          ->seeJson([
+            'error' => null,
+          ])->seeJsonStructure([
+            'data' => [
+              '*' => ['id', 'name', 'cost', 'created_at', 'updated_at', 'service_tags']
+            ],
+            'meta'
+          ]);
+
+        $jsonResponse = json_decode($this->response->content());
+        // Validate that the correct number of services were retrieved
+        $this->assertCount(1, $jsonResponse->data);
+        // validate the correct data is returned
+        $this->assertEquals(1 ,$jsonResponse->data[0]->id);
+    }
+
+    /** @test */
+    public function can_filter_service_by_tag_id()
+    {
+        // Creating 3 services with 1 service tags each
+        factory(App\Service::class, 3)->create()->each(function($service){
+          $service->serviceTags()->save(factory(App\ServiceTag::class, 1)->make());
+        });
+        // Get a single service by id
+        $this->json('GET', '/api/services?filter-tag-ids=2')
+          ->seeJson([
+            'error' => null,
+          ])->seeJsonStructure([
+            'data' => [
+              '*' => ['id', 'name', 'cost', 'created_at', 'updated_at', 'service_tags']
+            ],
+            'meta'
+          ]);
+
+        $jsonResponse = json_decode($this->response->content());
+        // Validate that the correct number of services were retrieved
+        $this->assertCount(1, $jsonResponse->data);
+        // Validate that the correct service was retrieved
+        $this->assertEquals(2, $jsonResponse->data[0]->id);
+
+        // Get a multiple services by id
+        $this->json('GET', '/api/services?filter-tag-ids=1,2')
+          ->seeJson([
+            'error' => null,
+          ])->seeJsonStructure([
+            'data' => [
+              '*' => ['id', 'name', 'cost', 'created_at', 'updated_at', 'service_tags']
+            ],
+            'meta'
+          ]);
+
+        $jsonResponse = json_decode($this->response->content());
+        // Validate that the correct number of services were retrieved
+        $this->assertCount(2, $jsonResponse->data);
+        // Validate that the correct service was retrieved
+        $this->assertEquals(1, $jsonResponse->data[0]->id);
+        $this->assertEquals(2, $jsonResponse->data[1]->id);
+    }
+
+    /** @test */
+    public function can_filter_service_tags_empty()
+    {
+        // Creating 3 services with 1 service tags each
+        factory(App\Service::class, 3)->create()->each(function($service){
+          $service->serviceTags()->save(factory(App\ServiceTag::class, 1)->make());
+        });
+        // empty request
+        $this->json('GET', '/api/services?filter-tags-ids=')
+          ->seeJson([
+            'error' => null,
+          ])->seeJsonStructure([
+            'data' => [
+              '*' => ['id', 'name', 'cost', 'created_at', 'updated_at', 'service_tags']
+            ],
+            'meta'
+          ]);
+
+        $jsonResponse = json_decode($this->response->content());
+        // Validate that the correct number of services were retrieved
+        $this->assertCount(3, $jsonResponse->data);
+    }
+
+    /** @test */
     public function can_list_all_services()
     {
       // Creating 3 services with 3 service tags each
