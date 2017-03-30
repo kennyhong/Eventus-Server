@@ -174,22 +174,22 @@ class ServiceAPITest extends TestCase
     /** @test */
     public function can_filter_service_by_tag_id()
     {
-        // Creating 3 services with 1 service tags each
-        factory(App\Service::class, 1)->create(['name'=>'test1'])->each(function($service){
-            factory(App\ServiceTag::class, 1)->make()->each(function($serviceTag) use ($service){
-                $service->serviceTags()->save($serviceTag);
-            });
-        });
-        factory(App\Service::class, 1)->create(['name'=>'test2'])->each(function($service){
-            factory(App\ServiceTag::class, 1)->make()->each(function($serviceTag) use ($service){
-                $service->serviceTags()->save($serviceTag);
-            });
-        });
-        factory(App\Service::class, 1)->create(['name'=>'test3'])->each(function($service){
-            factory(App\ServiceTag::class, 1)->make()->each(function($serviceTag) use ($service){
-                $service->serviceTags()->save($serviceTag);
-            });
-        });
+        //create services and service tags
+        factory(App\Service::class, 4)->create();
+        factory(App\ServiceTag::class, 4)->create();
+        //give them some data
+        $this->json('PUT', '/api/services/1', ['name' => "test1", 'cost' => 123,]);
+        $this->json('PUT', '/api/services/2', ['name' => "test2", 'cost' => 123,]);
+        $this->json('PUT', '/api/services/3', ['name' => "test3", 'cost' => 123,]);
+
+        $this->json('PUT', '/api/service_tags/1', ['name' => "tag1",]);
+        $this->json('PUT', '/api/service_tags/2', ['name' => "tag2",]);
+        $this->json('PUT', '/api/service_tags/3', ['name' => "tag3",]);
+        //connect them together
+        $this->json('POST', '/api/services/1/service_tags/1');
+        $this->json('POST', '/api/services/2/service_tags/2');
+        $this->json('POST', '/api/services/3/service_tags/3');
+
         // Get a single service by id
         $this->json('GET', '/api/services?filter-tag-ids=2');
 
