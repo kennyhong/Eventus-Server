@@ -53,4 +53,11 @@ class Service extends Model
         $query->whereIn('id', $ids);
     });
   }
+
+  public function scopeOrder($query, $request){
+    $columnName = $request->input('order-by') ?: 'name';
+    $direction = $request->input('order') ?: 'asc';
+
+    return $query->orderBy($columnName, $direction);
+  }
 }

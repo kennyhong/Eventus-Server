@@ -7,15 +7,17 @@ use App\ServiceTag;
 
 class ServiceTagController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
+      $data = ServiceTag::order($request)->get();
+
       return response()->json([
-        'data' => ServiceTag::all(),
+        'data' => $data,
       ]);
     }
 
     public function store(Request $request){
       $serviceTag = ServiceTag::create($request->all());
-      
+
       return response()->json([
         'data' => $serviceTag,
       ]);

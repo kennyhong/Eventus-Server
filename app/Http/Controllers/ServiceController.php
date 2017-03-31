@@ -14,6 +14,7 @@ class ServiceController extends Controller
         filterByIds($request)->
         filterByTagIds($request)->
         filterExceptIds($request)->
+        order($request)->
         get();
 
       return response()->json([
@@ -60,9 +61,15 @@ class ServiceController extends Controller
       ]);
     }
 
-    public function getServiceTags($id){
+    public function getServiceTags(Request $request, $id){
+      $data = Service::findOrFail($id)->serviceTags()->
+      filterByIds($request)->
+      filterExceptIds($request)->
+      order($request)->
+      get();
+
       return response()->json([
-        'data' => Service::findOrFail($id)->serviceTags()->get(),
+        'data' => $data,
       ]);
     }
 

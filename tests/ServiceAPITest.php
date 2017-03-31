@@ -55,7 +55,7 @@ class ServiceAPITest extends TestCase
         $this->assertEquals(2, $jsonResponse->data[0]->id);
 
         // Get multiple services by id
-        $this->json('GET', '/api/services?filter-ids=1,2')
+        $this->json('GET', '/api/services?filter-ids=1,2&order-by=id')
           ->seeJson([
             'error' => null,
           ])->seeJsonStructure([
@@ -104,7 +104,7 @@ class ServiceAPITest extends TestCase
           $service->serviceTags()->save(factory(App\ServiceTag::class, 1)->make());
         });
         // Filter out a single service by id
-        $this->json('GET', '/api/services?filter-except-ids=2')
+        $this->json('GET', '/api/services?filter-except-ids=2&order-by=id')
           ->seeJson([
             'error' => null,
           ])->seeJsonStructure([
@@ -122,7 +122,7 @@ class ServiceAPITest extends TestCase
         $this->assertEquals(3, $jsonResponse->data[1]->id);
 
         // Filter out multiple services by id
-        $this->json('GET', '/api/services?filter-except-ids=1,2')
+        $this->json('GET', '/api/services?filter-except-ids=1,2&order-by=id')
           ->seeJson([
             'error' => null,
           ])->seeJsonStructure([
@@ -212,7 +212,7 @@ class ServiceAPITest extends TestCase
         $this->assertEquals(2, $jsonResponse->data[0]->id);
 
         // Get a multiple services by id
-        $this->json('GET', '/api/services?filter-tag-ids=1,2')
+        $this->json('GET', '/api/services?filter-tag-ids=1,2&order-by=id')
           ->seeJson([
             'error' => null,
           ])->seeJsonStructure([
