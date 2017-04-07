@@ -9,9 +9,15 @@ use App\ServiceTag;
 
 class ServiceController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
+      $data = Service::with(['serviceTags'])->
+        filterByIds($request)->
+        filterByTagIds($request)->
+        filterExceptIds($request)->
+        get();
+
       return response()->json([
-        'data' => Service::with(['serviceTags'])->get(),
+          'data' => $data,
       ]);
     }
 
@@ -27,6 +33,7 @@ class ServiceController extends Controller
       return response()->json([
         'data' => Service::with(['serviceTags'])->where('id', '=', $id)->get()->first(),
       ]);
+
     }
 
     public function update(Request $request, $id){
