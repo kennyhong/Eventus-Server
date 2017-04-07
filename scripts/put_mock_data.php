@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html>
-<body>
 <?php
 /*****************************************
 This script populates the servers database with useful and authentic looking mock data.
@@ -213,5 +210,3 @@ makeService('Tavern United',44.99);
 makeLinks(45,array(12,13));
 
 ?>
-</body>
-</html>
