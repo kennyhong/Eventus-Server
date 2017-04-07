@@ -8,7 +8,9 @@ use App\ServiceTag;
 class ServiceTagController extends Controller
 {
     public function index(Request $request){
-      $data = ServiceTag::order($request)->get();
+      $data = ServiceTag::filterByIds($request)->
+      filterExceptIds($request)->
+      order($request)->get();
 
       return response()->json([
         'data' => $data,
