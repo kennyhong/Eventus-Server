@@ -7,7 +7,7 @@ The script assumes that the server is empty before it runs
 
 //creates a service with given variables
 function makeService($name, $cost){
-	$url = 'http://127.0.0.1:8000/api/services/';
+	$url = 'http://eventus.us-west-2.elasticbeanstalk.com/api/services/';
 	$data = array('name' => $name,'cost' => $cost);
 	$options = array(
 	'http' => array(
@@ -23,7 +23,7 @@ function makeService($name, $cost){
 }
 //create a service tag with given name
 function makeTag($name){
-	$url = 'http://127.0.0.1:8000/api/service_tags/';
+	$url = 'http://eventus.us-west-2.elasticbeanstalk.com/api/service_tags/';
 	$data = array('name' => $name);
 	$options = array(
 	'http' => array(
@@ -39,7 +39,7 @@ function makeTag($name){
 }
 //link a service tag to a service
 function makeLink($sid, $tid){
-	$url = 'http://127.0.0.1:8000/api/services/'.$sid.'/service_tags/'.$tid;
+	$url = 'http://eventus.us-west-2.elasticbeanstalk.com/api/services/'.$sid.'/service_tags/'.$tid;
 	$options = array(
 	'http' => array(
     'method'  => 'POST',
