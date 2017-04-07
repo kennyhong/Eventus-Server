@@ -9,9 +9,13 @@ use App\Service;
 
 class EventController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
+      $data = Event::with(['services','services.serviceTags'])->
+      order($request)->
+      get();
+
       return response()->json([
-        'data' => Event::with(['services','services.serviceTags'])->get(),
+        'data' => $data,
       ]);
     }
 
@@ -74,9 +78,16 @@ class EventController extends Controller
         ]);
     }
 
-    public function getServices($id){
+    public function getServices(Request $request, $id){
+      $data = Event::findOrFail($id)->services()->with('serviceTags')->
+        filterByIds($request)->
+        filterByTagIds($request)->
+        filterExceptIds($request)->
+        order($request)->
+        get();
+
       return response()->json([
-        'data' => Event::findOrFail($id)->services()->with('serviceTags')->get(),
+        'data' => $data,
       ]);
     }
 
