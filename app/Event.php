@@ -23,4 +23,11 @@ class Event extends Model
   public function services(){
     return $this->belongsToMany('App\Service');
   }
+
+  public function scopeOrder($query, $request){
+    $columnName = $request->input('order-by') ?: 'date';
+    $direction = $request->input('order') ?: 'asc';
+
+    return $query->orderBy($columnName, $direction);
+  }
 }
